@@ -1,4 +1,5 @@
-import { Model, DataType, Table, Column, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Model, DataType, Table, Column, BelongsTo, ForeignKey, HasMany } from "sequelize-typescript";
+import { Todo } from "src/todo/todo.model";
 import { User } from "src/users/users.model";
 
 interface GroupCreationAttrs{
@@ -17,4 +18,6 @@ export class Group extends Model<Group, GroupCreationAttrs>{
   userID: string;
   @BelongsTo(()=>User)
   owner: User
+  @HasMany(()=>Todo)
+  todos: Todo[]
 }

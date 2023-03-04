@@ -1,5 +1,6 @@
 import { Model, DataType, Table, Column, HasMany } from "sequelize-typescript";
 import { Group } from "src/group/group.model";
+import { Todo } from "src/todo/todo.model";
 
 interface UserCreationAttrs{
   username: string;
@@ -16,4 +17,6 @@ export class User extends Model<User, UserCreationAttrs>{
   password: string;
   @HasMany(()=>Group)
   groups: Group[]
+  @HasMany(()=>Todo)
+  todos: Todo[]
 }

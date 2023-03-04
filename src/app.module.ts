@@ -8,6 +8,7 @@ import { BlockListModule } from './block-list/block-list.module';
 import { TodoModule } from './todo/todo.module';
 import { GroupModule } from './group/group.module';
 import { Group } from './group/group.model';
+import { Todo } from './todo/todo.model';
 
 @Module({
   controllers: [],
@@ -21,7 +22,7 @@ import { Group } from './group/group.model';
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      models: [User, Group],
+      models: [User, Group, Todo],
       autoLoadModels: true
     }),
     UsersModule,
