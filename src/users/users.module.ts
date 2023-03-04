@@ -5,15 +5,16 @@ import { User } from './users.model';
 import { UsersService } from './users.service';
 import { AuthModule } from 'src/auth/auth.module';
 import { BlockListModule } from 'src/block-list/block-list.module';
+import { Group } from 'src/group/group.model';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User]),
+    SequelizeModule.forFeature([User, Group]),
     forwardRef(()=>AuthModule),
-    BlockListModule
+    BlockListModule,
   ],
-  exports: [UsersService,  ]
+  exports: [UsersService,]
 })
 export class UsersModule {}

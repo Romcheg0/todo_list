@@ -5,6 +5,9 @@ import { User } from './users/users.model';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { BlockListModule } from './block-list/block-list.module';
+import { TodoModule } from './todo/todo.module';
+import { GroupModule } from './group/group.module';
+import { Group } from './group/group.model';
 
 @Module({
   controllers: [],
@@ -18,12 +21,14 @@ import { BlockListModule } from './block-list/block-list.module';
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      models: [User],
+      models: [User, Group],
       autoLoadModels: true
     }),
     UsersModule,
     AuthModule,
     BlockListModule,
+    TodoModule,
+    GroupModule,
   ]
 })
 export class AppModule {}

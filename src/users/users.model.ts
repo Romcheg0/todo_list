@@ -1,4 +1,5 @@
-import { Model, DataType, Table, Column } from "sequelize-typescript";
+import { Model, DataType, Table, Column, HasMany } from "sequelize-typescript";
+import { Group } from "src/group/group.model";
 
 interface UserCreationAttrs{
   username: string;
@@ -13,4 +14,6 @@ export class User extends Model<User, UserCreationAttrs>{
   username: string;
   @Column({type: DataType.STRING, allowNull: false })
   password: string;
+  @HasMany(()=>Group)
+  groups: Group[]
 }
