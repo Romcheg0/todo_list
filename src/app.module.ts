@@ -9,6 +9,8 @@ import { TodoModule } from './todo/todo.module';
 import { GroupModule } from './group/group.module';
 import { Group } from './group/group.model';
 import { Todo } from './todo/todo.model';
+import { SubtaskModule } from './subtask/subtask.module';
+import { Subtask } from './subtask/subtask.model';
 
 @Module({
   controllers: [],
@@ -22,7 +24,7 @@ import { Todo } from './todo/todo.model';
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      models: [User, Group, Todo],
+      models: [User, Group, Todo, Subtask],
       autoLoadModels: true
     }),
     UsersModule,
@@ -30,6 +32,7 @@ import { Todo } from './todo/todo.model';
     BlockListModule,
     TodoModule,
     GroupModule,
+    SubtaskModule,
   ]
 })
 export class AppModule {}

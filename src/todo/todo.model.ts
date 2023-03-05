@@ -1,5 +1,6 @@
-import { Model, DataType, Table, Column, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Model, DataType, Table, Column, BelongsTo, ForeignKey, HasMany } from "sequelize-typescript";
 import { Group } from "src/group/group.model";
+import { Subtask } from "src/subtask/subtask.model";
 import { User } from "src/users/users.model";
 
 interface TodoCreationAttrs{
@@ -19,12 +20,14 @@ export class Todo extends Model<Todo, TodoCreationAttrs>{
   isCompleted: boolean
   @ForeignKey(()=>User)
   @Column({type: DataType.INTEGER, allowNull: false })
-  userId: string;
+  userId: number;
   @ForeignKey(()=>Group)
-  @Column({type: DataType.INTEGER, allowNull: true})
-  groupId: string
+  @Column({type: DataType.INTEGER, allowNull: false})
+  groupId: number
   @BelongsTo(()=>User)
   owner: User
   @BelongsTo(()=>Group)
   group: Group
+  @HasMany(()=>Subtask)
+  subtasks: Subtask[]
 }

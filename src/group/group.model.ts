@@ -15,7 +15,7 @@ export class Group extends Model<Group, GroupCreationAttrs>{
   name: string;
   @ForeignKey(()=>User)
   @Column({type: DataType.INTEGER, allowNull: false })
-  userID: string;
+  userId: number;
   @BelongsTo(()=>User)
   owner: User
   @HasMany(()=>Todo)

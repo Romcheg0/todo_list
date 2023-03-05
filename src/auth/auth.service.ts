@@ -1,30 +1,48 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs'
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/users.model';
+import { UsersService } from 'src/users/users.service';
 import { BlockListService } from 'src/block-list/block-list.service';
 @Injectable()
 export class AuthService {
-  constructor(private userService: UsersService, private jwtService: JwtService, private blockListService: BlockListService){}
+  constructor(
+    private userService: UsersService, 
+    private jwtService: JwtService, private blockListService: BlockListService
+  ){}
 
   async registration(userDto: CreateUserDto){
-    const candidate = await this.userService.getUserByUserName(userDto.username)
-    if(candidate){
-      throw new HttpException('User with such username is already exist', HttpStatus.BAD_REQUEST)
+    try{
+      const candidate = await this.userService.getUserByUserName(userDto.username)
+      if(candidate){
+        throw new BadRequestException({message: "User with such username is already exist"})
+      }
+      const hashPassword = await bcrypt.hash(userDto.password, 5)
+      const user = await this.userService.createUser({...userDto, password: hashPassword})
+      return user
     }
-    const hashPassword = await bcrypt.hash(userDto.password, 5)
-    const user = await this.userService.createUser({...userDto, password: hashPassword})
-    return user
+    catch(e){
+      throw new BadRequestException({message: "User with such username is already exist"})
+    }
   }
   async login(userDto: CreateUserDto){
-    const user = await this.validateUser(userDto)
-    return this.generateTokens(user)
+    try{
+      const user = await this.validateUser(userDto)
+      return this.generateTokens(user)
+    }
+    catch(e){
+      throw e
+    }
   }
   async logout(token: string){
-    const blockedToken = await this.blockListService.createBlockList(token)
-    return blockedToken
+    try{
+      const blockedToken = await this.blockListService.createBlockList(token)
+      return blockedToken
+    }
+    catch(e){
+      throw new BadRequestException({message: "Bad data for user"})
+    }
   }
   async refresh(authToken: string, refreshToken: string){
     try{
@@ -33,20 +51,20 @@ export class AuthService {
         id: data["id"],
         username: data["username"]
       }
-      this.logout(authToken.split(' ')[1])
+      await this.logout(authToken.split(' ')[1])
       return {
         accessToken: this.jwtService.sign(payload, {secret: process.env.ACCESS_PRIVATE_KEY, expiresIn: "15m"}),
         refreshToken: this.jwtService.sign(payload, {secret: process.env.REFRESH_PRIVATE_KEY, expiresIn: "15d"})
       }
     }
     catch(e){
-      throw new UnauthorizedException({message: 'Refresh time was expired, log in once again'})
+      throw new UnauthorizedException({message: 'Bad data, log in once again'})
     }
   }
   private async generateTokens(user: User){
     const payload = {id: user.id, username: user.username}
     return {
-      accessToken: this.jwtService.sign(payload, {secret: process.env.ACCESS_PRIVATE_KEY, expiresIn: "15m"}),
+      accessToken: this.jwtService.sign(payload, {secret: process.env.ACCESS_PRIVATE_KEY, expiresIn: "15h"}),
       refreshToken: this.jwtService.sign(payload, {secret: process.env.REFRESH_PRIVATE_KEY, expiresIn: "15d"})
     }
   }

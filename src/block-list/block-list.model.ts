@@ -4,6 +4,6 @@ import { Model, DataType, Table, Column } from "sequelize-typescript";
 export class BlockList extends Model<BlockList>{
   @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
   id: number;
-  @Column({type: DataType.STRING, allowNull: false })
+  @Column({type: DataType.STRING, allowNull: false, unique: true })
   token: string;
 }

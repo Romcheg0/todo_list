@@ -13,7 +13,7 @@ export class TodoService {
         let notSortedGroup = await (await this.groupService.getAllForUser(dto.userId))
         .find(item=>item.name === "Not sorted")
         if(!notSortedGroup){
-          const newGroup = await this.groupService.createGroup({"name": "Not sorted", "userID": dto.userId})
+          const newGroup = await this.groupService.createGroup({"name": "Not sorted", "userId": dto.userId})
           notSortedGroup = newGroup
         }
         dto.groupId = notSortedGroup.id
@@ -42,11 +42,11 @@ export class TodoService {
   async getAllForUser(id){
     try {
       const todos = await this.todoRepository.findAll({where: {userId: id}})
-      if(todos){
+      if(todos.length){
         return todos
       }
       else{
-        throw new BadRequestException({message: "No users with such ID"})
+        throw new BadRequestException({message: "No tasks for user with such ID"})
       }
     } catch (e) {
       throw new BadRequestException({message: "No users with such ID"})
@@ -57,15 +57,15 @@ export class TodoService {
       let updateData = {
         text: dto.text, 
         isCompleted: dto.isCompleted, 
-        userId: dto.userId.toString(), 
+        userId: dto.userId, 
       }
       if(dto.hasOwnProperty("groupId")){
         updateData["groupId"] = dto.groupId
       }
-      const todo = await this.todoRepository.update(
+      await this.todoRepository.update(
         updateData, 
         {where: {id}}
-        )
+      )
       return this.getById(id)
     }
     catch(e){

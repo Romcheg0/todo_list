@@ -19,8 +19,13 @@ export class GroupService {
   }
   async getAllForUser(id: number){
     try{     
-      const groups = await this.groupRepository.findAll({where: {userID: id}})
-      return groups
+      const groups = await this.groupRepository.findAll({where: {userId: id}})
+      if(groups.length){
+        return groups
+      }
+      else{
+        throw new BadRequestException({message: "No user with such id"})
+      }
     }
     catch(e){
       throw new BadRequestException({message: "No user with such id"})
@@ -29,7 +34,12 @@ export class GroupService {
   async getById(id){
     try{
       const group = await this.groupRepository.findOne({where: {id}})
-      return group
+      if(group){
+        return group
+      }
+      else{
+        throw new BadRequestException({message: "No group with such ID"})
+      }
     }
     catch(e){
       throw new BadRequestException({message: "No group with such ID"})
@@ -37,7 +47,7 @@ export class GroupService {
   }
   async updateGroup(id: number, dto: CreateGroupDto){
     try{
-      const group = await this.groupRepository.update({name: dto.name, userID: dto.userID.toString()}, {where: {id}})
+      await this.groupRepository.update({name: dto.name, userId: dto.userId}, {where: {id}})
       return this.getById(id)
     }
     catch(e){

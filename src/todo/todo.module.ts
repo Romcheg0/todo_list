@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from 'src/auth/auth.module';
 import { BlockListModule } from 'src/block-list/block-list.module';
-import { Group } from 'src/group/group.model';
 import { GroupModule } from 'src/group/group.module';
-import { User } from 'src/users/users.model';
 import { TodoController } from './todo.controller';
-import { Todo } from './todo.model';
 import { TodoService } from './todo.service';
+import { Group } from 'src/group/group.model';
+import { User } from 'src/users/users.model';
+import { Todo } from './todo.model';
 
 @Module({
   controllers: [TodoController],
