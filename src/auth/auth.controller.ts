@@ -8,14 +8,14 @@ import { JwtAuthGuard } from './jwt-auth-guard';
 export class AuthController {
   constructor(private authService: AuthService){}
 
-  @Post('/login')
-  login(@Body() userDto: CreateUserDto){
-    return this.authService.login(userDto)
-  }
   @UsePipes(ValidationPipe)
   @Post('/registration')
   registration(@Body() userDto: CreateUserDto){
     return this.authService.registration(userDto)
+  }
+  @Post('/login')
+  login(@Body() userDto: CreateUserDto){
+    return this.authService.login(userDto)
   }
   @UseGuards(JwtAuthGuard)
   @Post('/logout')
